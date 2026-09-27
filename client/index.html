@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔭</text></svg>" />
+  <title>Sternbergs Vermächtnis – Escape Room</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;600&family=Special+Elite&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <div id="hud" hidden>
+    <div id="crosshair"></div>
+    <div id="hover-label"></div>
+    <div id="topbar">
+      <span id="room-name"></span>
+      <span id="timer">00:00</span>
+    </div>
+    <div id="bottombar">
+      <div id="inventory"></div>
+      <button id="btn-notes" title="Notizbuch (N)">📓 Notizbuch <kbd>N</kbd></button>
+    </div>
+  </div>
+
+  <div id="pause" class="screen" hidden>
+    <div class="card small">
+      <h2>Pausiert</h2>
+      <p>Klicke, um weiterzuspielen.</p>
+      <p class="muted">WASD bewegen · Maus umsehen · Klick untersuchen · Shift rennen · N Notizbuch · Esc Pause</p>
+    </div>
+  </div>
+
+  <div id="start" class="screen">
+    <div class="card">
+      <h1>Sternbergs Vermächtnis</h1>
+      <p class="lead">Professor Albrecht Sternberg, Astronom und Exzentriker, ist seit drei Wochen verschwunden.
+        Sein Testament enthält nur einen Satz: <em>„Wer meine drei Räume durchschreitet, findet, was ich hinterlassen habe.“</em></p>
+      <p>Du stehst in seinem Arbeitszimmer. Die Tür fällt hinter dir ins Schloss.</p>
+      <div class="buttons">
+        <button id="btn-new" class="primary">Neues Spiel</button>
+        <button id="btn-continue" hidden>Fortsetzen</button>
+      </div>
+      <p class="muted">WASD bewegen · Maus umsehen · Klick untersuchen · Shift rennen · N Notizbuch<br />
+        Hinweise kosten jeweils 60 Sekunden Strafzeit.</p>
+      <h3>Bestenliste</h3>
+      <ol id="leaderboard" class="leaderboard"></ol>
+    </div>
+  </div>
+
+  <div id="end" class="screen" hidden>
+    <div class="card">
+      <h1>Freiheit!</h1>
+      <p class="lead">Du hast Sternbergs Vermächtnis entschlüsselt.</p>
+      <p class="big" id="end-time"></p>
+      <form id="score-form">
+        <input id="score-name" maxlength="20" placeholder="Dein Name" required />
+        <button class="primary">Eintragen</button>
+      </form>
+      <h3>Bestenliste</h3>
+      <ol id="end-leaderboard" class="leaderboard"></ol>
+      <div class="buttons"><button id="btn-again">Nochmal spielen</button></div>
+    </div>
+  </div>
+
+  <div id="fade"></div>
+  <div id="modal-root"></div>
+  <div id="toasts"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
