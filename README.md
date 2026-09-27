@@ -2,6 +2,8 @@
 
 First-Person-Escape-Room im Browser mit drei Räumen und acht verketteten Rätseln.
 
+**▶ Jetzt spielen: https://bavarianator.github.io/sternbergs-vermaechtnis/**
+
 ## Stack
 
 | Teil      | Technik                                                        |
