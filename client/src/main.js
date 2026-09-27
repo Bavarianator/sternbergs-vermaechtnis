@@ -60,12 +60,15 @@ function enterRoom(i) {
   ui.toast(info.name);
 }
 
+let transitioning = false;
 game.nextRoom = () => {
-  if (game.state.room >= ROOMS.length - 1) return;
+  if (transitioning || game.state.room >= ROOMS.length - 1) return;
+  transitioning = true;
   $('fade').classList.add('on');
   setTimeout(() => {
     enterRoom(game.state.room + 1);
     $('fade').classList.remove('on');
+    transitioning = false;
   }, 800);
 };
 

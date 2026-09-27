@@ -183,7 +183,22 @@ export function door(api, { D, x = 0, color = '#4a2e1a', label, onUse }) {
   let target = 0;
   api.onUpdate((dt) => (pivot.rotation.y += (target - pivot.rotation.y) * Math.min(1, dt * 2)));
   api.interact(g, label, onUse);
-  return { open: () => (target = 1.5), openNow: () => (pivot.rotation.y = target = 1.5) };
+  // Once open, the doorway itself is clickable and walking into it passes through.
+  const gap = new THREE.Mesh(new THREE.PlaneGeometry(DOOR_W, DOOR_H), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
+  gap.position.set(0, DOOR_H / 2, -0.05);
+  gap.visible = false;
+  g.add(gap);
+  api.interact(gap, label, onUse);
+  let passed = false;
+  api.onUpdate(() => {
+    const p = api.camera.position;
+    if (gap.visible && !passed && p.z < -D / 2 + 0.45 && Math.abs(p.x - x) < DOOR_W / 2) {
+      passed = true;
+      onUse();
+    }
+  });
+  const open = () => (target = 1.5, gap.visible = true);
+  return { open, openNow: () => (open(), pivot.rotation.y = 1.5) };
 }
 
 // ---------- drawings shared by 3D textures and close-ups ----------

@@ -14,7 +14,11 @@ function drawPoster(g, w, h) {
   g.font = `600 ${h * 0.09}px Cinzel, serif`;
   g.fillText('LUNARER ZYKLUS', w / 2, h * 0.17);
   const r = w / 22;
-  for (let k = 0; k < 8; k++) drawMoon(g, w * (0.08 + k * 0.12), h * 0.5, r, k);
+  g.font = `600 ${h * 0.07}px Cinzel, serif`;
+  for (let k = 0; k < 8; k++) {
+    drawMoon(g, w * (0.08 + k * 0.12), h * 0.46, r, k);
+    g.fillText(k, w * (0.08 + k * 0.12), h * 0.7);
+  }
   g.font = `italic ${h * 0.06}px "Special Elite", monospace`;
   g.fillText('Der Zyklus beginnt im Dunkeln.  Die Sterne zählen nur bis Sieben.', w / 2, h * 0.85);
 }
@@ -150,11 +154,13 @@ export default function build(api) {
     Eine handgezeichnete Himmelskarte. Am Rand, in Sternbergs Handschrift:
     <div class="cipher">L R P Q S I Q Z</div>
     „Der Name, den dir das Licht im Arbeitszimmer nannte, ist der Schlüssel.
-    Jeder seiner Buchstaben hat die Botschaft ein Stück weitergeschoben.“`);
+    Jeder seiner Buchstaben hat die Botschaft ein Stück weitergeschoben.“<br><br>
+    <small>Unter die Botschaft hat er den Schlüssel Buchstabe für Buchstabe geschrieben und notiert:
+    „A schiebt 0, B schiebt 1, C schiebt 2 … – zieh die Schritte wieder ab.“</small><div class="cipher" style="font-size:1rem">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</div>`);
   api.interact(cab, () => (game.solved('r3_chart') ? 'Kartenschrank (offen)' : 'Kartenschrank (Zahlenschloss)'), () => {
     if (game.solved('r3_chart')) return chartNote();
     ui.keypad({
-      title: 'Kartenschrank', puzzleId: 'r3_chart', intro: 'Ein Messingschloss mit vier Zahlenrädern. Eingraviert: „Was die Nacht zeigt.“',
+      title: 'Kartenschrank', puzzleId: 'r3_chart', intro: 'Ein Messingschloss mit vier Zahlenrädern. Eingraviert: „Was die Nacht zeigt – gezählt wie die Sterne: I × 512 + II × 64 + III × 8 + IV“',
       onSolved: () => { game.give('chart', 'Sternkarte', '🗺️', 'L R P Q S I Q Z'); chartNote(); },
     });
   });

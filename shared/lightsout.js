@@ -1,6 +1,6 @@
 // Shared by client (display) and server (verification).
 export const N = 5;
-export const START_PRESSES = [0, 2, 7, 9, 11, 13, 16, 20, 23, 24];
+export const START_PRESSES = [6, 13, 17];
 
 export function press(grid, i) {
   const r = Math.floor(i / N), c = i % N;

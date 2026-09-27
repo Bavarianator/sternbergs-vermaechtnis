@@ -7,8 +7,9 @@ const W = 10, D = 8, H = 3.2;
 
 // Shelf order (left to right as seen from the room). Decoys are non-spectral colors.
 const BOOKS = [
-  ['#2563c9', 'L'], ['#6b4226', 'K'], ['#9b3fc9', 'I'], ['#c0262d', 'G'], ['#e8c832', 'L'], ['#1a1a1a', 'O'],
-  ['#3a2a8c', 'E'], ['#e8781e', 'A'], ['#e8e4da', 'P'], ['#2f8f3a', 'I'], ['#7a7a7a', 'R'],
+  ['#2563c9', 'L', 'Blau'], ['#6b4226', 'K', 'Braun'], ['#9b3fc9', 'I', 'Violett'], ['#c0262d', 'G', 'Rot'],
+  ['#e8c832', 'L', 'Gelb'], ['#1a1a1a', 'O', 'Schwarz'], ['#3a2a8c', 'E', 'Indigo'], ['#e8781e', 'A', 'Orange'],
+  ['#e8e4da', 'P', 'Weiß'], ['#2f8f3a', 'I', 'Grün'], ['#7a7a7a', 'R', 'Grau'],
 ];
 const ink = (c) => (['#e8c832', '#e8e4da', '#e8781e'].includes(c) ? '#2a1d10' : '#f1e2b5');
 
@@ -130,7 +131,9 @@ export default function build(api) {
   api.solid(shelf);
   api.interact(shelf, 'Bücherregal', () => {
     ui.modal('Bücherregal – mittleres Fach', [
-      ui.h('div', { class: 'shelf' }, BOOKS.map(([c, l]) => ui.h('div', { class: 'book', style: `background:${c};color:${ink(c)};height:${150 + (l.charCodeAt(0) % 5) * 12}px` }, l))),
+      ui.h('div', { class: 'shelf' }, BOOKS.map(([c, l, name]) => ui.h('div', { style: 'text-align:center' },
+        ui.h('div', { class: 'book', style: `background:${c};color:${ink(c)};height:${150 + (l.charCodeAt(0) % 5) * 12}px` }, l),
+        ui.h('div', { class: 'muted', style: 'font-size:.7rem;margin-top:14px' }, name)))),
       ui.h('p', { class: 'muted', style: 'margin-top:12px' }, 'Elf Bücher, jedes mit einem einzelnen goldgeprägten Buchstaben auf dem Rücken. Keine Titel, keine Autoren.'),
     ], { wide: true });
   });
@@ -161,6 +164,7 @@ export default function build(api) {
       maxLength: 7,
       onSolved: () => {
         openSafe();
+        game.addNote('Tresor geöffnet', 'Das Wort, das den Tresor öffnete: <b>GALILEI</b>');
         game.give('key', 'Messingschlüssel', '🗝️', 'Ein kleiner, verzierter Messingschlüssel. Passt zu einem Möbelschloss.');
         ui.toast('Du findest einen kleinen Messingschlüssel.');
       },
@@ -186,7 +190,8 @@ export default function build(api) {
   api.onUpdate((dt) => (drawer.position.x += (drawerTarget - drawer.position.x) * Math.min(1, dt * 4)));
   const drawerNote = () => ui.note('Notiz aus der Schublade', `
     Die Zeiger schweigen seit jener Nacht.<br><br>
-    Der <b>kleinere Winkel</b> zwischen ihnen – in ganzen Grad – ist die erste Hälfte des Türcodes.<br><br>
+    Der <b>kleinere Winkel</b> zwischen ihnen – in ganzen Grad – ist die erste Hälfte des Türcodes.<br>
+    <small>(Der große Zeiger wandert 6° pro Minute. Vergiss nicht: Auch der kleine bleibt nicht stehen – 30° pro Stunde, also ½° pro Minute.)</small><br><br>
     Die zweite Hälfte habe ich hinter der Landschaft versteckt.
     <p class="sig">– A. S.</p>`);
   api.interact(drawer, () => (game.flag('drawer') ? 'Schublade (Notiz lesen)' : 'Schublade'), () => {
@@ -202,9 +207,9 @@ export default function build(api) {
   note.position.set(W / 2 - 0.7, 0.795, -0.35);
   api.add(note);
   api.interact(note, 'Zettel', () => ui.note('Zettel auf dem Schreibtisch', `
-    Newton zerlegte das Licht in sieben Teile.<br><br>
-    Folge seinem Weg – vom <b>Längsten</b> zum <b>Kürzesten</b> –<br>
-    und die Bücher nennen dir einen Namen.<br><br>
+    Newton zerlegte das Licht in sieben Teile – die Farben des Regenbogens.<br><br>
+    Folge seinem Weg – von der <b>längsten</b> Welle (Rot) zur <b>kürzesten</b> (Violett) –<br>
+    und die Bücher nennen dir einen Namen. Farben, die nicht im Regenbogen vorkommen, lügen.<br><br>
     Der Name öffnet mehr als nur eine Tür.
     <p class="sig">– A. S.</p>`));
 
@@ -266,6 +271,21 @@ export default function build(api) {
       Du hebst den Rahmen an. In den Putz ist etwas eingeritzt:<br>
       <div class="cipher">— — — · ·&nbsp;&nbsp;&nbsp;· · — — —</div>`);
   });
+
+  // ---------- Morse chart (north wall) ----------
+  const MORSE = ['— — — — —', '· — — — —', '· · — — —', '· · · — —', '· · · · —', '· · · · ·', '— · · · ·', '— — · · ·', '— — — · ·', '— — — — ·'];
+  const drawMorse = (g, w, h) => {
+    g.fillStyle = '#e9dfc4'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#6e4d1f'; g.lineWidth = 10; g.strokeRect(0, 0, w, h);
+    g.fillStyle = '#2b2217'; g.textAlign = 'center'; g.font = `600 ${h * 0.07}px Cinzel, serif`;
+    g.fillText('MORSEZEICHEN', w / 2, h * 0.1);
+    g.font = `${h * 0.06}px monospace`; g.textAlign = 'left';
+    MORSE.forEach((m, i) => g.fillText(`${i}   ${m}`, w * 0.2, h * (0.2 + i * 0.075)));
+  };
+  const morseChart = panel(tex(400, 560, drawMorse), 0.5, 0.7);
+  onWall(morseChart, 'n', -2.6, 1.6, W, D, 0.02);
+  api.add(morseChart);
+  api.interact(morseChart, 'Tafel mit Morsezeichen', () => ui.image('Morsezeichen', canvas(400, 560, drawMorse)));
 
   // ---------- Intro letter on side table ----------
   const table = new THREE.Group();

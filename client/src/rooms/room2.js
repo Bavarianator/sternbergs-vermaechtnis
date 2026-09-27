@@ -202,7 +202,8 @@ Jede Farbe genau einmal. Fehler werden protokolliert.`, { terminal: true });
   api.interact(uv, 'Leuchtende Schrift', () => ui.note('UV-Schrift an der Südwand', `
     Im violetten Licht der Lampe erscheint:
     <div class="cipher">ANJW SJZS JNSX XJHMX</div>
-    <i>Jeder Buchstabe ist so viele Schritte vorgerückt, wie Kolben auf dem Tisch stehen.</i>`));
+    <i>Jeder Buchstabe ist so viele Schritte im Alphabet vorgerückt, wie Kolben auf dem Tisch stehen.<br>
+    Geh also genauso viele Schritte zurück.</i><div class="cipher" style="font-size:1rem">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</div>`));
   const uvGlow = new THREE.PointLight('#8a3cff', 0, 4);
   uvGlow.position.set(1.5, 1.7, D / 2 - 0.8);
   api.add(uvGlow);
